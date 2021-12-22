@@ -23,3 +23,24 @@ If the strategy is NONE, the program should print lines that do not contain word
 All listed operations are implemented in the inverted index. The results should not contain duplicates.
 
 Note, do not forget to use methods to decompose your program.
+
+Example   
+The lines that start with > represent the user input. Note that these symbols are not part of the input.
+
+=== Menu ===
+1. Find a person
+2. Print all persons
+0. Exit
+> 1
+
+Select a matching strategy: ALL, ANY, NONE
+> ANY
+
+Enter a name or email to search all matching people.
+> Katie Erick QQQ
+
+3 persons found:
+Katie Jacobs
+Erick Harrington harrington@gmail.com
+Erick Burgess
+
