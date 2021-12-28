@@ -36,7 +36,6 @@ public class SearchEngine {
         }
     }
 
-
     private Map<String, ArrayList<Integer>> mapWords(ArrayList<String> lines) {
         Map<String, ArrayList<Integer>> hashMapWords = new HashMap<>();
         lines.stream()
@@ -89,14 +88,15 @@ public class SearchEngine {
             }
             case "ANY" -> {
                 matchingStrategy = new AnyStrategyImpl();
-                found =matchingStrategy.search(list, lines, query);
+                found = matchingStrategy.search(list, lines, query);
             }
             case "NONE" -> {
                 matchingStrategy = new NoneStrategyImpl();
                 found = matchingStrategy.search(list, lines, query);
             }
             default -> found = new ArrayList<>();
-        };
+        }
+        ;
 
         if (found.isEmpty()) {
             System.out.println("No matching person found.");
