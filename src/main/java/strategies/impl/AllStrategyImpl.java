@@ -1,4 +1,4 @@
-package impl;
+package strategies.impl;
 
 import strategies.SearchStrategy;
 
@@ -9,18 +9,24 @@ import java.util.Map;
 public class AllStrategyImpl implements SearchStrategy {
 
     @Override
-    public List<String> search(ArrayList<String> list, Map<String, ArrayList<Integer>> searchMap, String query) {
-        String[] words = query.trim().split("\s");
-        ArrayList<String> found = new ArrayList<>();
 
-        outer:
+    public List<String> search(List<String> list, Map<String, ArrayList<Integer>> searchMap, String query) {
+        String[] words = queryWords(query);
+        List<String> found = new ArrayList<>();
+
         for (int index : searchMap.getOrDefault(words[0], new ArrayList<>())) {
+            boolean temporaryIndex = false;
+
             for (String word : words) {
                 if (!list.get(index).toUpperCase().contains(word)) {
-                    continue outer;
+                    temporaryIndex = true;
+                    break;
                 }
             }
-            found.add(list.get(index));
+
+            if (!temporaryIndex) {
+                found.add(list.get(index));
+            }
         }
         return found;
     }

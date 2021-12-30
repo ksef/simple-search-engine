@@ -6,5 +6,9 @@ import java.util.Map;
 
 public interface SearchStrategy {
 
-    List<String> search(ArrayList<String> list, Map<String, ArrayList<Integer>> searchMap, String query);
+    List<String> search(List<String> list, Map<String, ArrayList<Integer>> searchMap, String query);
+
+    default String[] queryWords(String query) {
+        return query.trim().split("\\s+");
+    }
 }
