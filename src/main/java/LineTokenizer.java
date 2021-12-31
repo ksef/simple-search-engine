@@ -6,24 +6,29 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class LineTokenizer {
-    Map<String, ArrayList<Integer>> newMapWords;
-    List<Integer> linesWithWord;
+class LineTokenizer {
 
-    public Map<String, ArrayList<Integer>> mapWords(List<String> lines) {
-        newMapWords = new HashMap<>();
+    private final Map<String, List<Integer>> wordsChart;
+
+    public LineTokenizer() {
+        this.wordsChart = new HashMap<>();
+    }
+
+    public Map<String, List<Integer>> mapWords(List<String> lines) {
         lines.stream()
-                .map(line -> line.trim().split("\\s+"))
+                .map(line -> line.split("\\s+"))
                 .flatMap(Stream::of)
-                .map(String::toUpperCase).filter(word -> !newMapWords.containsKey(word))
-                .forEach(word -> newMapWords.put(word, (ArrayList<Integer>) getLinesWithWord(lines, word)));
-        return newMapWords;
+                .map(String::toUpperCase)
+                .filter(word -> !wordsChart.containsKey(word))
+                .forEach(word -> wordsChart.put(word, getLinesWithWord(lines, word)));
+        return wordsChart;
     }
 
     private List<Integer> getLinesWithWord(List<String> list, String word) {
-        linesWithWord = IntStream.range(0, list.size())
+        return IntStream
+                .range(0, list.size())
                 .filter(rowIndex -> list.get(rowIndex).toUpperCase().contains(word))
-                .boxed().collect(Collectors.toCollection(ArrayList::new));
-        return linesWithWord;
+                .boxed()
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }

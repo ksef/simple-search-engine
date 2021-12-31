@@ -14,6 +14,7 @@ class SearchEngine {
     private final FileReader fileReader;
     private final Scanner scanner;
     private final LineTokenizer lineTokenizer;
+    private List<String> peopleList;
 
 
     public SearchEngine(FileReader fileReader) {
@@ -23,14 +24,14 @@ class SearchEngine {
     }
 
     public void run() throws IOException {
-        List<String> peopleList = fileReader.readFile();
+        peopleList = fileReader.readFile();
         while (true) {
             printMenu();
             String selection = scanner.nextLine();
             switch (selection) {
-                case "1" -> find(peopleList, lineTokenizer.mapWords(peopleList));
+                case "1" -> peopleFinder();
                 case "2" -> printList(peopleList);
-                case "3" -> {
+                case "0" -> {
                     scanner.close();
                     System.out.println("\nBye!");
                     return;
@@ -50,10 +51,14 @@ class SearchEngine {
 
     private void printList(List<String> list) {
         System.out.println("\n=== List of people ===");
-        list.stream().map(String::new).forEach(s -> System.out.println(s.trim()));
+        list.forEach(s -> System.out.println(s.trim()));
     }
 
-    private void find(List<String> list, Map<String, ArrayList<Integer>> lines) {
+    private void peopleFinder() {
+        find(peopleList, lineTokenizer.mapWords(peopleList));
+    }
+
+    private void find(List<String> list, Map<String, List<Integer>> lines) {
         System.out.println("\nSelect a matching strategy: ALL, ANY, NONE");
         String strategy = scanner.nextLine();
         System.out.println("\nEnter a name or email to search all suitable people.");
@@ -82,7 +87,7 @@ class SearchEngine {
         } else {
             System.out.println();
             System.out.println(found.size() + " persons found:");
-            found.forEach(s -> System.out.println(s.trim()));
+            printList(found);
         }
     }
 }

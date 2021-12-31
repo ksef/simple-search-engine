@@ -6,11 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static util.QuerySplitter.queryWords;
+
 public class AllStrategyImpl implements SearchStrategy {
 
     @Override
-
-    public List<String> search(List<String> list, Map<String, ArrayList<Integer>> searchMap, String query) {
+    public List<String> search(List<String> stringsList, Map<String, List<Integer>> searchMap, String query) {
         String[] words = queryWords(query);
         List<String> found = new ArrayList<>();
 
@@ -18,14 +19,14 @@ public class AllStrategyImpl implements SearchStrategy {
             boolean temporaryIndex = false;
 
             for (String word : words) {
-                if (!list.get(index).toUpperCase().contains(word)) {
+                if (!stringsList.get(index).toUpperCase().contains(word)) {
                     temporaryIndex = true;
                     break;
                 }
             }
 
             if (!temporaryIndex) {
-                found.add(list.get(index));
+                found.add(stringsList.get(index));
             }
         }
         return found;
