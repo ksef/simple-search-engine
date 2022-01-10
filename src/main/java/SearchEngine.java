@@ -1,30 +1,26 @@
-import strategies.impl.AllStrategyImpl;
-import strategies.impl.AnyStrategyImpl;
-import strategies.impl.NoneStrategyImpl;
+import strategies.StrategyChooser;
 import strategies.SearchStrategy;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 class SearchEngine {
 
-    private final FileReader fileReader;
     private final Scanner scanner;
     private final LineTokenizer lineTokenizer;
-    private List<String> peopleList;
+    private final List<String> peopleList;
+    private final StrategyChooser strategyChooser;
 
-
-    public SearchEngine(FileReader fileReader) {
-        this.fileReader = fileReader;
+    public SearchEngine(FileReader fileReader) throws IOException {
+        peopleList = fileReader.readFile();
         scanner = new Scanner(System.in);
         lineTokenizer = new LineTokenizer();
+        strategyChooser = new StrategyChooser();
     }
 
-    public void run() throws IOException {
-        peopleList = fileReader.readFile();
+    public void run() {
         while (true) {
             printMenu();
             String selection = scanner.nextLine();
@@ -49,39 +45,13 @@ class SearchEngine {
                 0. Exit""");
     }
 
-    private void printList(List<String> list) {
-        System.out.println("\n=== List of people ===");
-        list.forEach(s -> System.out.println(s.trim()));
-    }
-
-    private void peopleFinder() {
-        find(peopleList, lineTokenizer.mapWords(peopleList));
-    }
-
-    private void find(List<String> list, Map<String, List<Integer>> lines) {
+    public void find(List<String> list, Map<String, List<Integer>> lines) {
         System.out.println("\nSelect a matching strategy: ALL, ANY, NONE");
         String strategy = scanner.nextLine();
+        SearchStrategy searchStrategy = strategyChooser.get(strategy);
         System.out.println("\nEnter a name or email to search all suitable people.");
         String query = scanner.nextLine().toUpperCase();
-        SearchStrategy matchingStrategy;
-        List<String> found;
-
-        switch (strategy) {
-            case "ALL" -> {
-                matchingStrategy = new AllStrategyImpl();
-                found = matchingStrategy.search(list, lines, query);
-            }
-            case "ANY" -> {
-                matchingStrategy = new AnyStrategyImpl();
-                found = matchingStrategy.search(list, lines, query);
-            }
-            case "NONE" -> {
-                matchingStrategy = new NoneStrategyImpl();
-                found = matchingStrategy.search(list, lines, query);
-            }
-            default -> found = new ArrayList<>();
-        }
-
+        List<String> found = searchStrategy.search(list, lines, query);
         if (found.isEmpty()) {
             System.out.println("No matching person found.");
         } else {
@@ -89,5 +59,14 @@ class SearchEngine {
             System.out.println(found.size() + " persons found:");
             printList(found);
         }
+    }
+
+    public void printList(List<String> list) {
+        System.out.println("\n=== List of people ===");
+        list.forEach(s -> System.out.println(s.trim()));
+    }
+
+    private void peopleFinder() {
+        find(peopleList, lineTokenizer.mapWords(peopleList));
     }
 }

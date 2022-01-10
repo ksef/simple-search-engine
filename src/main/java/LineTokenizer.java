@@ -1,25 +1,22 @@
-import java.util.ArrayList;
+import util.QueryFilter;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 class LineTokenizer {
 
-    private final Map<String, List<Integer>> wordsChart;
-
-    public LineTokenizer() {
-        this.wordsChart = new HashMap<>();
-    }
-
     public Map<String, List<Integer>> mapWords(List<String> lines) {
+        Map<String, List<Integer>> wordsChart = new HashMap<>();
         lines.stream()
-                .map(line -> line.split("\\s+"))
+                .map(QueryFilter::queryFilter)
                 .flatMap(Stream::of)
                 .map(String::toUpperCase)
-                .filter(word -> !wordsChart.containsKey(word))
+                .filter(Predicate.not(wordsChart::containsKey))
                 .forEach(word -> wordsChart.put(word, getLinesWithWord(lines, word)));
         return wordsChart;
     }
@@ -29,6 +26,6 @@ class LineTokenizer {
                 .range(0, list.size())
                 .filter(rowIndex -> list.get(rowIndex).toUpperCase().contains(word))
                 .boxed()
-                .collect(Collectors.toCollection(ArrayList::new));
+                .collect(Collectors.toList());
     }
 }

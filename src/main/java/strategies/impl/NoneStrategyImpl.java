@@ -2,31 +2,20 @@ package strategies.impl;
 
 import strategies.SearchStrategy;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static util.QuerySplitter.queryWords;
+import static util.QueryFilter.queryFilter;
 
 public class NoneStrategyImpl implements SearchStrategy {
 
     @Override
     public List<String> search(List<String> stringsList, Map<String, List<Integer>> searchMap, String query) {
-        String[] words = queryWords(query);
-        List<String> found = new ArrayList<>();
-
-        boolean skipThisIndex = false;
-        for (String s : stringsList) {
-            for (String word : words) {
-                if (s.toUpperCase().contains(word)) {
-                    skipThisIndex = true;
-                    break;
-                }
-            }
-            if (!skipThisIndex) {
-                found.add(s);
-            }
-        }
-        return found;
+        String[] words = queryFilter(query);
+        return stringsList.stream()
+                .filter(s -> Arrays.stream(words).noneMatch(word -> s.toUpperCase().contains(word)))
+                .collect(Collectors.toList());
     }
 }
