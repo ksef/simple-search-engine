@@ -3,7 +3,6 @@ import strategies.SearchStrategy;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import static util.LineUtils.convertToArray;
@@ -11,14 +10,12 @@ import static util.LineUtils.convertToArray;
 class SearchEngine {
 
     private final Scanner scanner;
-    private final LineTokenizer lineTokenizer;
     private final List<String> peopleList;
     private final StrategyChooser strategyChooser;
 
     public SearchEngine(FileReader fileReader) throws IOException {
         peopleList = fileReader.readFile();
         scanner = new Scanner(System.in);
-        lineTokenizer = new LineTokenizer();
         strategyChooser = new StrategyChooser();
     }
 
@@ -27,7 +24,7 @@ class SearchEngine {
             printMenu();
             String selection = scanner.nextLine();
             switch (selection) {
-                case "1" -> find(peopleList, lineTokenizer.mapWords(peopleList));
+                case "1" -> find(peopleList);
                 case "2" -> printPeople(peopleList);
                 case "0" -> {
                     scanner.close();
@@ -47,13 +44,13 @@ class SearchEngine {
                 0. Exit""");
     }
 
-    private void find(List<String> list, Map<String, List<Integer>> lines) {
+    private void find(List<String> list) {
         System.out.println("\nSelect a matching strategy: ALL, ANY, NONE");
         String strategy = scanner.nextLine();
         SearchStrategy searchStrategy = strategyChooser.get(strategy);
         System.out.println("\nEnter a name or email to search all suitable people.");
         String[] query = convertToArray(scanner.nextLine());
-        List<String> found = searchStrategy.search(list, lines, query);
+        List<String> found = searchStrategy.search(list, query);
 
         if (found.isEmpty()) {
             System.out.println("No matching person found.");
