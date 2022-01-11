@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import static util.LineUtils.convertToArray;
+
 class SearchEngine {
 
     private final Scanner scanner;
@@ -25,8 +27,8 @@ class SearchEngine {
             printMenu();
             String selection = scanner.nextLine();
             switch (selection) {
-                case "1" -> peopleFinder();
-                case "2" -> printList(peopleList);
+                case "1" -> find(peopleList, lineTokenizer.mapWords(peopleList));
+                case "2" -> printPeople(peopleList);
                 case "0" -> {
                     scanner.close();
                     System.out.println("\nBye!");
@@ -45,28 +47,25 @@ class SearchEngine {
                 0. Exit""");
     }
 
-    public void find(List<String> list, Map<String, List<Integer>> lines) {
+    private void find(List<String> list, Map<String, List<Integer>> lines) {
         System.out.println("\nSelect a matching strategy: ALL, ANY, NONE");
         String strategy = scanner.nextLine();
         SearchStrategy searchStrategy = strategyChooser.get(strategy);
         System.out.println("\nEnter a name or email to search all suitable people.");
-        String query = scanner.nextLine().toUpperCase();
+        String[] query = convertToArray(scanner.nextLine());
         List<String> found = searchStrategy.search(list, lines, query);
+
         if (found.isEmpty()) {
             System.out.println("No matching person found.");
         } else {
             System.out.println();
             System.out.println(found.size() + " persons found:");
-            printList(found);
+            printPeople(found);
         }
     }
 
-    public void printList(List<String> list) {
+    private void printPeople(List<String> people) {
         System.out.println("\n=== List of people ===");
-        list.forEach(s -> System.out.println(s.trim()));
-    }
-
-    private void peopleFinder() {
-        find(peopleList, lineTokenizer.mapWords(peopleList));
+        people.forEach(s -> System.out.println(s.trim()));
     }
 }
