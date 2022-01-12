@@ -11,19 +11,17 @@ import java.util.stream.Collectors;
 public class NoneStrategyImpl implements SearchStrategy {
 
     @Override
-    public List<String> search(List<String> peopleList, Map<String, List<Integer>> lines, String[] words) {
-        List<Integer> wordIndexes =
-                Arrays.stream(words)
-                        .flatMap(word -> lines.getOrDefault(word, new ArrayList<>()).stream())
-                        .toList();
-
-        return lines.keySet().stream()
-                .flatMap(word -> lines.getOrDefault(word, new ArrayList<>()).stream())
+    public List<String> search(List<String> peoples, Map<String, List<Integer>> linesIndexesByWord, String[] queryWords) {
+        List<Integer> wordIndexes = Arrays.stream(queryWords)
+                .flatMap(word -> linesIndexesByWord.getOrDefault(word, new ArrayList<>()).stream())
                 .distinct()
+                .toList();
+
+        return linesIndexesByWord.keySet().stream()
+                .flatMap(word -> linesIndexesByWord.getOrDefault(word, new ArrayList<>()).stream())
                 .filter(index -> !wordIndexes.contains(index))
-                .map(peopleList::get)
+                .map(peoples::get)
                 .distinct()
                 .collect(Collectors.toList());
     }
 }
-

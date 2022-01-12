@@ -9,19 +9,17 @@ import java.util.stream.Stream;
 
 class LineTokenizer {
 
-    public Map<String, List<Integer>> mapWords(List<String> lines) {
-
+    public Map<String, List<Integer>> convertToLinesIndexesByWord(List<String> lines) {
         return lines.stream()
                 .map(LineUtils::convertToArray)
                 .flatMap(Stream::of)
-                .map(String::toUpperCase)
                 .collect(Collectors.toMap(
                         Function.identity(),
-                        word -> getLinesWithWord(lines, word),
+                        word -> getLinesIndexes(lines, word),
                         (existing, replacement) -> existing));
     }
 
-    private List<Integer> getLinesWithWord(List<String> list, String word) {
+    private List<Integer> getLinesIndexes(List<String> list, String word) {
         return IntStream
                 .range(0, list.size())
                 .filter(rowIndex -> list.get(rowIndex).toUpperCase().contains(word))

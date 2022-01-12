@@ -1,22 +1,21 @@
 import strategies.StrategyChooser;
 import strategies.SearchStrategy;
+import util.LineUtils;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import static util.LineUtils.convertToArray;
-
 class SearchEngine {
 
     private final Scanner scanner;
-    private final List<String> peopleList;
+    private final List<String> peoples;
     private final StrategyChooser strategyChooser;
-    LineTokenizer lineTokenizer;
+    private final LineTokenizer lineTokenizer;
 
     public SearchEngine(FileReader fileReader) throws IOException {
-        peopleList = fileReader.readFile();
+        peoples = fileReader.readFile();
         scanner = new Scanner(System.in);
         strategyChooser = new StrategyChooser();
         lineTokenizer = new LineTokenizer();
@@ -27,8 +26,8 @@ class SearchEngine {
             printMenu();
             String selection = scanner.nextLine();
             switch (selection) {
-                case "1" -> find(peopleList, lineTokenizer.mapWords(peopleList));
-                case "2" -> printPeople(peopleList);
+                case "1" -> findPeoples(lineTokenizer.convertToLinesIndexesByWord(peoples));
+                case "2" -> printPeoples(peoples);
                 case "0" -> {
                     scanner.close();
                     System.out.println("\nBye!");
@@ -47,25 +46,32 @@ class SearchEngine {
                 0. Exit""");
     }
 
-    private void find(List<String> list, Map<String, List<Integer>> lines) {
+    private void findPeoples(Map<String, List<Integer>> linesIndexesByWord) {
         System.out.println("\nSelect a matching strategy: ALL, ANY, NONE");
         String strategy = scanner.nextLine();
         SearchStrategy searchStrategy = strategyChooser.get(strategy);
         System.out.println("\nEnter a name or email to search all suitable people.");
-        String[] query = convertToArray(scanner.nextLine());
-        List<String> found = searchStrategy.search(list, lines, query);
+        String[] queryWords = LineUtils.convertToArray(scanner.nextLine());
+        if (queryWords != null) {
+            List<String> foundPeoples = searchStrategy.search(peoples, linesIndexesByWord, queryWords);
 
-        if (found.isEmpty()) {
-            System.out.println("No matching person found.");
+            if (foundPeoples.isEmpty()) {
+                System.out.println("No matching person found.");
+            } else {
+                System.out.println(String.format("\n%d persons found:", foundPeoples.size()));
+                printPeoples(foundPeoples);
+            }
         } else {
-            System.out.println();
-            System.out.println(found.size() + " persons found:");
-            printPeople(found);
+            System.out.println("You pressed 'Enter'");
+            run();
         }
     }
 
-    private void printPeople(List<String> people) {
+    private void printPeoples(List<String> peoples) {
         System.out.println("\n=== List of people ===");
-        people.stream().distinct().forEach(s -> System.out.println(s.trim()));
+        peoples.stream()
+                .distinct()
+                .map(String::trim)
+                .forEach(System.out::println);
     }
 }
