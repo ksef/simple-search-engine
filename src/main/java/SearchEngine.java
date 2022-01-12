@@ -3,6 +3,7 @@ import strategies.SearchStrategy;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import static util.LineUtils.convertToArray;
@@ -12,11 +13,13 @@ class SearchEngine {
     private final Scanner scanner;
     private final List<String> peopleList;
     private final StrategyChooser strategyChooser;
+    LineTokenizer lineTokenizer;
 
     public SearchEngine(FileReader fileReader) throws IOException {
         peopleList = fileReader.readFile();
         scanner = new Scanner(System.in);
         strategyChooser = new StrategyChooser();
+        lineTokenizer = new LineTokenizer();
     }
 
     public void run() {
@@ -24,7 +27,7 @@ class SearchEngine {
             printMenu();
             String selection = scanner.nextLine();
             switch (selection) {
-                case "1" -> find(peopleList);
+                case "1" -> find(peopleList, lineTokenizer.mapWords(peopleList));
                 case "2" -> printPeople(peopleList);
                 case "0" -> {
                     scanner.close();
@@ -44,13 +47,13 @@ class SearchEngine {
                 0. Exit""");
     }
 
-    private void find(List<String> list) {
+    private void find(List<String> list, Map<String, List<Integer>> lines) {
         System.out.println("\nSelect a matching strategy: ALL, ANY, NONE");
         String strategy = scanner.nextLine();
         SearchStrategy searchStrategy = strategyChooser.get(strategy);
         System.out.println("\nEnter a name or email to search all suitable people.");
         String[] query = convertToArray(scanner.nextLine());
-        List<String> found = searchStrategy.search(list, query);
+        List<String> found = searchStrategy.search(list, lines, query);
 
         if (found.isEmpty()) {
             System.out.println("No matching person found.");
@@ -63,6 +66,6 @@ class SearchEngine {
 
     private void printPeople(List<String> people) {
         System.out.println("\n=== List of people ===");
-        people.forEach(s -> System.out.println(s.trim()));
+        people.stream().distinct().forEach(s -> System.out.println(s.trim()));
     }
 }

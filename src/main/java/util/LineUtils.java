@@ -1,12 +1,11 @@
 package util;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public final class LineUtils {
 
-    private LineUtils() {
-        throw new IllegalStateException();
-    }
-
-    public static String[] convertToArray(String query) {
+    public String[] convertToArray(String query) {
         return query.toUpperCase().trim().split("\\s+");
     }
 }
