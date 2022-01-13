@@ -46,24 +46,18 @@ class SearchEngine {
                 0. Exit""");
     }
 
-    private void findPeoples(Map<String, List<Integer>> linesIndexesByWord) {
+    private void findPeoples(Map<String, List<Integer>> linesIndexesByWord) throws ArrayIndexOutOfBoundsException {
         System.out.println("\nSelect a matching strategy: ALL, ANY, NONE");
         String strategy = scanner.nextLine();
         SearchStrategy searchStrategy = strategyChooser.get(strategy);
         System.out.println("\nEnter a name or email to search all suitable people.");
         String[] queryWords = LineUtils.convertToArray(scanner.nextLine());
-        if (queryWords != null) {
-            List<String> foundPeoples = searchStrategy.search(peoples, linesIndexesByWord, queryWords);
-
-            if (foundPeoples.isEmpty()) {
-                System.out.println("No matching person found.");
-            } else {
-                System.out.println(String.format("\n%d persons found:", foundPeoples.size()));
-                printPeoples(foundPeoples);
-            }
+        List<String> foundPeoples = searchStrategy.search(peoples, linesIndexesByWord, queryWords);
+        if (foundPeoples.isEmpty() || queryWords[0].equals("")) {
+            System.out.println("No matching person found.");
         } else {
-            System.out.println("You pressed 'Enter'");
-            run();
+            System.out.println(String.format("\n%d persons found:", foundPeoples.size()));
+            printPeoples(foundPeoples);
         }
     }
 
