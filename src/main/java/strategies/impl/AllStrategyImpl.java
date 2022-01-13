@@ -3,6 +3,7 @@ package strategies.impl;
 import strategies.SearchStrategy;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,8 +19,9 @@ public class AllStrategyImpl implements SearchStrategy {
                 .forEach(wordIndexes::retainAll);
 
         return linesIndexesByWord.keySet().stream()
-                .filter(word -> linesIndexesByWord.getOrDefault(word, new ArrayList<>()).containsAll(wordIndexes))
-                .flatMap(word -> linesIndexesByWord.getOrDefault(word, new ArrayList<>()).stream())
+                .map(matchedWord -> linesIndexesByWord.getOrDefault(matchedWord, new ArrayList<>()))
+                .filter(matchedPerson -> matchedPerson.containsAll(wordIndexes))
+                .flatMap(Collection::stream)
                 .map(peoples::get)
                 .distinct()
                 .collect(Collectors.toList());
