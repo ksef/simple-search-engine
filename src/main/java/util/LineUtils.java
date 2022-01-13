@@ -7,6 +7,10 @@ public final class LineUtils {
     }
 
     public static String[] convertToArray(String query) {
-        return query.toUpperCase().trim().split("\\s+");
+        if (query.equals("")) {
+            throw new IllegalArgumentException("You press the enter");
+        } else {
+            return query.toUpperCase().trim().split("\\s+");
+        }
     }
 }

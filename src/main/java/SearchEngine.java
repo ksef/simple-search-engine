@@ -52,18 +52,15 @@ class SearchEngine {
         SearchStrategy searchStrategy = strategyChooser.get(strategy);
         System.out.println("\nEnter a name or email to search all suitable people.");
         String[] queryWords = LineUtils.convertToArray(scanner.nextLine());
-        if (queryWords[0].equals("")){
-            System.out.println("You pressed 'Enter'");
+        List<String> foundPeoples = searchStrategy.search(peoples, linesIndexesByWord, queryWords);
+        if (foundPeoples.isEmpty()) {
+            System.out.println("No matching person found.");
         } else {
-            List<String> foundPeoples = searchStrategy.search(peoples, linesIndexesByWord, queryWords);
-            if (foundPeoples.isEmpty()) {
-                System.out.println("No matching person found.");
-            } else {
-                System.out.println(String.format("\n%d persons found:", foundPeoples.size()));
-                printPeoples(foundPeoples);
-            }
+            System.out.println(String.format("\n%d persons found:", foundPeoples.size()));
+            printPeoples(foundPeoples);
         }
     }
+
 
     private void printPeoples(List<String> peoples) {
         System.out.println("\n=== List of people ===");
