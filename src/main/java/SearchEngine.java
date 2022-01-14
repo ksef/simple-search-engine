@@ -72,7 +72,7 @@ class SearchEngine {
     }
 
     private void queryValidator(String[] queryWords) {
-        if (queryWords[0].equals("")) {
+        if (queryWords.length == 0) {
             throw new IllegalArgumentException("You pass the wrong query");
         }
     }

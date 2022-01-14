@@ -3,7 +3,6 @@ package strategies.impl;
 import strategies.SearchStrategy;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,8 +12,7 @@ public class AllStrategyImpl implements SearchStrategy {
 
     @Override
     public List<String> search(List<String> peoples, Map<String, List<Integer>> linesIndexesByWord, String[] queryWords) {
-        List<Integer> wordIndexes = linesIndexesByWord.getOrDefault(queryWords[0].toUpperCase(), new ArrayList<>());
-        matchWordIndexes(linesIndexesByWord, queryWords);
+        List<Integer> wordIndexes = matchWordIndexes(linesIndexesByWord, queryWords);
 
         return linesIndexesByWord.values().stream()
                 .flatMap(List::stream)
@@ -25,10 +23,11 @@ public class AllStrategyImpl implements SearchStrategy {
     }
 
     @Override
-    public List<Integer> matchWordIndexes(Map<String, List<java.lang.Integer>> linesIndexesByWord, String[] queryWords) {
-        return IntStream.range(1, queryWords.length)
+    public List<Integer> matchWordIndexes(Map<String, List<Integer>> linesIndexesByWord, String[] queryWords) {
+        List<Integer> wordIndexes = linesIndexesByWord.getOrDefault(queryWords[0].toUpperCase(), new ArrayList<>());
+        IntStream.range(1, queryWords.length)
                 .mapToObj(i -> linesIndexesByWord.getOrDefault(queryWords[i], new ArrayList<>()))
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .forEach(wordIndexes::retainAll);
+        return wordIndexes;
     }
 }
