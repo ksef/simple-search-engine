@@ -52,6 +52,8 @@ class SearchEngine {
         SearchStrategy searchStrategy = strategyChooser.get(strategy);
         System.out.println("\nEnter a name or email to search all suitable people.");
         String[] queryWords = LineUtils.convertToArray(scanner.nextLine());
+        queryValidator(queryWords);
+
         List<String> foundPeoples = searchStrategy.search(peoples, linesIndexesByWord, queryWords);
         if (foundPeoples.isEmpty()) {
             System.out.println("No matching person found.");
@@ -61,12 +63,17 @@ class SearchEngine {
         }
     }
 
-
     private void printPeoples(List<String> peoples) {
         System.out.println("\n=== List of people ===");
         peoples.stream()
                 .distinct()
                 .map(String::trim)
                 .forEach(System.out::println);
+    }
+
+    private void queryValidator(String[] queryWords) {
+        if (queryWords[0].equals("")) {
+            throw new IllegalArgumentException("You pass the wrong query");
+        }
     }
 }
