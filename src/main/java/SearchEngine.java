@@ -14,11 +14,11 @@ class SearchEngine {
     private final StrategyChooser strategyChooser;
     private final LineTokenizer lineTokenizer;
 
-    public SearchEngine(FileReader fileReader) throws IOException {
+    public SearchEngine(FileReader fileReader, Scanner scanner, LineTokenizer lineTokenizer) throws IOException {
         peoples = fileReader.readFile();
-        scanner = new Scanner(System.in);
+        this.scanner = scanner;
         strategyChooser = new StrategyChooser();
-        lineTokenizer = new LineTokenizer();
+        this.lineTokenizer = lineTokenizer;
     }
 
     public void run() {
@@ -38,7 +38,7 @@ class SearchEngine {
         }
     }
 
-    private void printMenu() {
+    public void printMenu() {
         System.out.println("""
                 === Menu ===
                 1. Find a person
@@ -46,7 +46,7 @@ class SearchEngine {
                 0. Exit""");
     }
 
-    private void findPeoples(Map<String, List<Integer>> linesIndexesByWord) {
+    public void findPeoples(Map<String, List<Integer>> linesIndexesByWord) {
         System.out.println("\nSelect a matching strategy: ALL, ANY, NONE");
         String strategy = scanner.nextLine();
         SearchStrategy searchStrategy = strategyChooser.get(strategy);
@@ -58,12 +58,12 @@ class SearchEngine {
         if (foundPeoples.isEmpty()) {
             System.out.println("No matching person found.");
         } else {
-            System.out.println(String.format("\n%d persons found:", foundPeoples.size()));
+            System.out.printf("\n%d persons found:%n", foundPeoples.size());
             printPeoples(foundPeoples);
         }
     }
 
-    private void printPeoples(List<String> peoples) {
+    public void printPeoples(List<String> peoples) {
         System.out.println("\n=== List of people ===");
         peoples.stream()
                 .distinct()
