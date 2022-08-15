@@ -59,7 +59,7 @@ class SearchEngineTest {
                 === List of people ===
                 Erick Harrington harrington@gmail.com
                 Erick Burgess""";
-        searchEngine.findPeoples(lineTokenizer.convertToLinesIndexesByWord(peoples));
+        searchEngine.findPeople(lineTokenizer.convertToLinesIndexesByWord(peoples));
         var result = outContent.toString().trim();
         assertTrue(result.contains(expected));
     }
@@ -70,7 +70,7 @@ class SearchEngineTest {
         scanner = new Scanner("ALL\nerick myrtle");
         searchEngine = new SearchEngine(fileReader, scanner, lineTokenizer);
         String expected = "No matching person found.";
-        searchEngine.findPeoples(lineTokenizer.convertToLinesIndexesByWord(peoples));
+        searchEngine.findPeople(lineTokenizer.convertToLinesIndexesByWord(peoples));
         var result = outContent.toString().trim();
         assertTrue(result.contains(expected));
     }
@@ -91,7 +91,7 @@ class SearchEngineTest {
                 Myrtle Medina
                 Erick Harrington harrington@gmail.com
                 Erick Burgess""";
-        searchEngine.findPeoples(lineTokenizer.convertToLinesIndexesByWord(peoples));
+        searchEngine.findPeople(lineTokenizer.convertToLinesIndexesByWord(peoples));
         var result = outContent.toString().trim();
         assertTrue(result.contains(expected));
     }
@@ -102,7 +102,7 @@ class SearchEngineTest {
         scanner = new Scanner("ANY\nsomestring");
         searchEngine = new SearchEngine(fileReader, scanner, lineTokenizer);
         String expected = "No matching person found.";
-        searchEngine.findPeoples(lineTokenizer.convertToLinesIndexesByWord(peoples));
+        searchEngine.findPeople(lineTokenizer.convertToLinesIndexesByWord(peoples));
         var result = outContent.toString().trim();
         assertTrue(result.contains(expected));
     }
@@ -124,7 +124,7 @@ class SearchEngineTest {
                 Katie Jacobs
                 Rene Webb webb@gmail.com
                 Dwight Joseph djo@gmail.com""";
-        searchEngine.findPeoples(lineTokenizer.convertToLinesIndexesByWord(peoples));
+        searchEngine.findPeople(lineTokenizer.convertToLinesIndexesByWord(peoples));
         var result = outContent.toString().trim();
         assertTrue(result.contains(expected));
     }
@@ -135,7 +135,7 @@ class SearchEngineTest {
         scanner = new Scanner("NONE\nerick myrtle katie rene dwight");
         searchEngine = new SearchEngine(fileReader, scanner, lineTokenizer);
         String expected = "No matching person found.";
-        searchEngine.findPeoples(lineTokenizer.convertToLinesIndexesByWord(peoples));
+        searchEngine.findPeople(lineTokenizer.convertToLinesIndexesByWord(peoples));
         var result = outContent.toString().trim();
         assertTrue(result.contains(expected));
     }
@@ -162,8 +162,7 @@ class SearchEngineTest {
                 Erick Harrington harrington@gmail.com
                 Myrtle Medina
                 Erick Burgess""";
-
-        searchEngine.printPeoples(fileReader.readFile());
+        searchEngine.printPeople(fileReader.readFile());
         var result = outContent.toString().trim();
         assertTrue(result.contains(expected));
     }
